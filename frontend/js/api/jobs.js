@@ -1,10 +1,19 @@
 // your code goes here.
-const URL = "";
 
-const searchJobsForm = document.querySelector("#search-jobs-form");
+const BASE_URL = "http://localhost:3000/jobs";
 
-searchJobsForm.addEventListener("submit", onSubmitSearchJobsForm);
+export async function getJobs() {
+  try {
+    const response = await fetch(`${BASE_URL}`);
 
-function onSubmitSearchJobsForm(e) {
-  e.preventDefault();
+    if (!response.ok) {
+      throw new Error("No data found");
+    }
+    const data = await response.json();
+
+    console.table(data); //Log Data for verification purposes
+    return data;
+  } catch (error) {
+    throw error;
+  }
 }
