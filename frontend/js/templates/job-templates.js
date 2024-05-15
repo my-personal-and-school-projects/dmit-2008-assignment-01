@@ -7,7 +7,7 @@ export const jobTemplate = ({ company, title, location, date_posted, id }) => `
 <h6 class="card-subtitle mb-2 text-body-secondary">
   Posted ${date_posted}
 </h6>
-<button class="btn btn-primary view-job-button" job-data-id="${id}">
+<button class="btn btn-primary view-job-button" data-job-id="${id}">
   View Job
 </button>
 </div>

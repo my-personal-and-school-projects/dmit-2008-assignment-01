@@ -20,7 +20,7 @@ async function onSubmitSearchJobsForm(e) {
   let jobTitle = queryInput.value.toLowerCase().trim();
   const searchResults = await searchJobs(jobTitle);
   displayJobs(searchResults);
-  addButtonEvent();
+  addJobViewButtonEvents();
 }
 
 //Display the job search results
@@ -75,14 +75,25 @@ async function displayAllJobs() {
       );
     });
   }
-  addButtonEvent();
+  addJobViewButtonEvents();
 }
 displayAllJobs();
 
 async function viewJobDetails(jobId) {
-  const jobDetails = jobsList.find((job) => job.id === jobId);
+  const jobDetails = jobsList.find((job) => String(job.id) === String(jobId));
+
+  console.log(jobDetails);
+  console.log(jobsList);
 
   if (jobDetails) {
+    const {
+      title,
+      company,
+      location,
+      date_posted,
+      description,
+      qualifications,
+    } = jobDetails;
     jobDetailsCard.innerHTML = jobDetailsCardTemplate({
       title,
       company,
@@ -94,12 +105,12 @@ async function viewJobDetails(jobId) {
   }
 }
 
-const addButtonEvent = () => {
+function addJobViewButtonEvents() {
   document.querySelectorAll(".view-job-button").forEach((button) => {
     button.addEventListener("click", async (event) => {
-      const jobId = event.target.dataset.id;
+      const jobId = event.target.dataset.jobId;
       console.log("Job ID:", jobId);
       await viewJobDetails(jobId);
     });
   });
-};
+}
