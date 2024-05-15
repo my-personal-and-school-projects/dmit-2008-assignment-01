@@ -1,10 +1,14 @@
 // your code goes here.
 import { getJobs } from "./api/jobs.js";
-import { jobTemplate } from "./templates/job-templates.js";
+import {
+  jobTemplate,
+  jobDetailsCardTemplate,
+} from "./templates/job-templates.js";
 
 const searchJobsForm = document.querySelector("#search-jobs-form");
 const searchedJobsContainer = document.querySelector("#searched-jobs");
 const queryInput = document.querySelector("#query-input");
+const jobDetailsCard = document.querySelector("#job-details-card");
 
 const jobsList = await getJobs();
 let myJobs = [];
@@ -16,6 +20,7 @@ async function onSubmitSearchJobsForm(e) {
   let jobTitle = queryInput.value.toLowerCase().trim();
   const searchResults = await searchJobs(jobTitle);
   displayJobs(searchResults);
+  addButtonEvent();
 }
 
 //Display the job search results
@@ -70,5 +75,31 @@ async function displayAllJobs() {
       );
     });
   }
+  addButtonEvent();
 }
 displayAllJobs();
+
+async function viewJobDetails(jobId) {
+  const jobDetails = jobsList.find((job) => job.id === jobId);
+
+  if (jobDetails) {
+    jobDetailsCard.innerHTML = jobDetailsCardTemplate({
+      title,
+      company,
+      location,
+      date_posted,
+      description,
+      qualifications,
+    });
+  }
+}
+
+const addButtonEvent = () => {
+  document.querySelectorAll(".view-job-button").forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      const jobId = event.target.dataset.id;
+      console.log("Job ID:", jobId);
+      await viewJobDetails(jobId);
+    });
+  });
+};
