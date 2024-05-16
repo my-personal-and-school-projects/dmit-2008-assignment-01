@@ -1,5 +1,5 @@
 // your code goes here.
-import { getJobs } from "./api/jobs.js";
+import { getJobs, postRequest } from "./api/jobs.js";
 import {
   jobTemplate,
   jobDetailsCardTemplate,
@@ -9,6 +9,10 @@ const searchJobsForm = document.querySelector("#search-jobs-form");
 const searchedJobsContainer = document.querySelector("#searched-jobs");
 const queryInput = document.querySelector("#query-input");
 const jobDetailsCard = document.querySelector("#job-details-card");
+const myJobsTab = document.querySelector("#my-jobs-tab");
+const searchJobsTab = document.querySelector("#search-jobs-tab");
+const toggleMyJobsTab = document.querySelector("#toggle-my-jobs-tab");
+const toggleSearchJobsTab = document.querySelector("#toggle-search-jobs-tab");
 
 const jobsList = await getJobs();
 let myJobs = [];
@@ -17,6 +21,7 @@ searchJobsForm.addEventListener("submit", onSubmitSearchJobsForm);
 
 async function onSubmitSearchJobsForm(e) {
   e.preventDefault();
+  jobDetailsCard.innerHTML = "";
   let jobTitle = queryInput.value.toLowerCase().trim();
   const searchResults = await searchJobs(jobTitle);
   displayJobs(searchResults);
@@ -113,4 +118,22 @@ function addJobViewButtonEvents() {
       await viewJobDetails(jobId);
     });
   });
+}
+
+//BONUS FUNCTIONALITY
+
+toggleMyJobsTab.addEventListener("click", (event) => {
+  event.preventDefault();
+  switchTabs(myJobsTab);
+});
+
+toggleSearchJobsTab.addEventListener("click", (event) => {
+  event.preventDefault();
+  switchTabs(searchJobsTab);
+});
+
+function switchTabs(tab) {
+  myJobsTab.classList.add("d-none");
+  searchJobsTab.classList.add("d-none");
+  tab.classList.remove("d-none");
 }
