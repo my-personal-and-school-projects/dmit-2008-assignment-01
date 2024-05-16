@@ -7,6 +7,7 @@ import {
 
 const searchJobsForm = document.querySelector("#search-jobs-form");
 const searchedJobsContainer = document.querySelector("#searched-jobs");
+const myJobsContainer = document.querySelector("#my-jobs");
 const queryInput = document.querySelector("#query-input");
 const jobDetailsCard = document.querySelector("#job-details-card");
 const myJobsTab = document.querySelector("#my-jobs-tab");
@@ -15,7 +16,6 @@ const toggleMyJobsTab = document.querySelector("#toggle-my-jobs-tab");
 const toggleSearchJobsTab = document.querySelector("#toggle-search-jobs-tab");
 
 const jobsList = await getJobs();
-let myJobs = [];
 
 searchJobsForm.addEventListener("submit", onSubmitSearchJobsForm);
 
@@ -98,6 +98,7 @@ async function viewJobDetails(jobId) {
       date_posted,
       description,
       qualifications,
+      id,
     } = jobDetails;
     jobDetailsCard.innerHTML = jobDetailsCardTemplate({
       title,
@@ -106,8 +107,10 @@ async function viewJobDetails(jobId) {
       date_posted,
       description,
       qualifications,
+      id,
     });
   }
+  addSaveJobButtonEvents();
 }
 
 function addJobViewButtonEvents() {
@@ -125,6 +128,8 @@ function addJobViewButtonEvents() {
 toggleMyJobsTab.addEventListener("click", (event) => {
   event.preventDefault();
   switchTabs(myJobsTab);
+
+  renderMyJobs(myJobs);
 });
 
 toggleSearchJobsTab.addEventListener("click", (event) => {
@@ -136,4 +141,55 @@ function switchTabs(tab) {
   myJobsTab.classList.add("d-none");
   searchJobsTab.classList.add("d-none");
   tab.classList.remove("d-none");
+}
+
+function saveJob() {
+  postRequest(job);
+}
+
+let myJobs = [];
+
+async function addMyJobs(jobId) {
+  const myJob = jobsList.find((job) => String(job.id) === String(jobId));
+
+  if (myJob && !myJobs.some((favJob) => String(favJob.id) === String(jobId))) {
+    myJobsContainer.innerHTML = "";
+
+    myJobs.push(myJob);
+    console.log("Added to bookmarked jobs:", myJob);
+
+    //saveJob(myJob); //call POST request
+  }
+}
+
+function addSaveJobButtonEvents() {
+  document.querySelectorAll(".save-job").forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      const jobId = event.target.dataset.jobId;
+      console.log("Job ID:", jobId);
+      await addMyJobs(jobId);
+    });
+  });
+}
+
+//Render my jobs when changing tabs
+function renderMyJobs(listOfJobs) {
+  myJobsContainer.innerHTML = ""; //Clear container
+
+  if (listOfJobs.length > 0) {
+    listOfJobs.forEach(({ company, title, location, date_posted, id }) => {
+      myJobsContainer.insertAdjacentHTML(
+        "beforeend",
+        jobTemplate({
+          company,
+          title,
+          location,
+          date_posted,
+          id,
+        })
+      );
+    });
+  } else {
+    myJobsContainer.innerHTML += defaultAlbumTemplate;
+  }
 }
