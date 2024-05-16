@@ -21,14 +21,14 @@ export async function getJobs() {
   }
 }
 
-//Make a POST request to the API
-export async function postRequest(job) {
+//Make a post request to the API
+export async function postRequest(jobId) {
   //Create request header
   const requestHeader = new Headers();
   requestHeader.append("content-type", "application/json");
 
   //Format the object as JSON
-  const payload = JSON.stringify(job);
+  const payload = JSON.stringify({ jobId });
 
   //Request object
   const requestObject = {

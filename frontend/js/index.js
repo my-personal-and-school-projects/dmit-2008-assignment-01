@@ -18,6 +18,32 @@ const toggleSearchJobsTab = document.querySelector("#toggle-search-jobs-tab");
 //Get the jobs data
 const jobsList = await getJobs();
 
+//Display all jobs on init
+async function displayAllJobs() {
+  searchedJobsContainer.innerHTML = "";
+
+  if (jobsList.length === 0) {
+    searchedJobsContainer.innerHTML = `
+        <div class="text-dark">No Results Found</div>
+        `;
+  } else {
+    jobsList.forEach(({ company, title, location, date_posted, id }) => {
+      searchedJobsContainer.insertAdjacentHTML(
+        "beforeend",
+        jobTemplate({
+          company,
+          title,
+          location,
+          date_posted,
+          id,
+        })
+      );
+    });
+  }
+  addJobViewButtonEvents();
+}
+displayAllJobs();
+
 searchJobsForm.addEventListener("submit", onSubmitSearchJobsForm);
 
 async function onSubmitSearchJobsForm(e) {
@@ -58,38 +84,10 @@ async function searchJobs(jobTitle) {
   const query = jobTitle;
   return jobsList.filter((job) => job.title.toLowerCase().includes(query));
 }
-
-//Display all jobs on init
-async function displayAllJobs() {
-  searchedJobsContainer.innerHTML = "";
-
-  if (jobsList.length === 0) {
-    searchedJobsContainer.innerHTML = `
-        <div class="text-dark">No Results Found</div>
-        `;
-  } else {
-    jobsList.forEach(({ company, title, location, date_posted, id }) => {
-      searchedJobsContainer.insertAdjacentHTML(
-        "beforeend",
-        jobTemplate({
-          company,
-          title,
-          location,
-          date_posted,
-          id,
-        })
-      );
-    });
-  }
-  addJobViewButtonEvents();
-}
-displayAllJobs();
-
 async function viewJobDetails(jobId) {
   const jobDetails = jobsList.find((job) => String(job.id) === String(jobId));
 
   console.log(jobDetails);
-  console.log(jobsList);
 
   if (jobDetails) {
     const {
@@ -117,6 +115,7 @@ async function viewJobDetails(jobId) {
 function addJobViewButtonEvents() {
   document.querySelectorAll(".view-job-button").forEach((button) => {
     button.addEventListener("click", async (event) => {
+      event.preventDefault();
       const jobId = event.target.dataset.jobId;
       console.log("Job ID:", jobId);
       await viewJobDetails(jobId);
@@ -144,8 +143,8 @@ function switchTabs(tab) {
   tab.classList.remove("d-none");
 }
 
-function saveJob(job) {
-  postRequest(job);
+function saveJob(jobId) {
+  postRequest(jobId);
 }
 
 let myJobs = [];
@@ -159,13 +158,15 @@ async function addMyJobs(jobId) {
     myJobs.push(myJob);
     console.log("Added to bookmarked jobs:", myJob);
 
-    saveJob(myJob); //call POST request
+    saveJob(jobId); //call POST request
+  } else {
+    console.log(myJob, "already exists");
   }
 }
-
 function addSaveJobButtonEvents() {
   document.querySelectorAll(".save-job").forEach((button) => {
     button.addEventListener("click", async (event) => {
+      event.preventDefault();
       const jobId = event.target.dataset.jobId;
       console.log("Job ID:", jobId);
       await addMyJobs(jobId);
