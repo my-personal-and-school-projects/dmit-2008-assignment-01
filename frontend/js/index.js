@@ -15,6 +15,7 @@ const searchJobsTab = document.querySelector("#search-jobs-tab");
 const toggleMyJobsTab = document.querySelector("#toggle-my-jobs-tab");
 const toggleSearchJobsTab = document.querySelector("#toggle-search-jobs-tab");
 
+//Get the jobs data
 const jobsList = await getJobs();
 
 searchJobsForm.addEventListener("submit", onSubmitSearchJobsForm);
@@ -143,7 +144,7 @@ function switchTabs(tab) {
   tab.classList.remove("d-none");
 }
 
-function saveJob() {
+function saveJob(job) {
   postRequest(job);
 }
 
@@ -158,7 +159,7 @@ async function addMyJobs(jobId) {
     myJobs.push(myJob);
     console.log("Added to bookmarked jobs:", myJob);
 
-    //saveJob(myJob); //call POST request
+    saveJob(myJob); //call POST request
   }
 }
 
@@ -189,7 +190,7 @@ function renderMyJobs(listOfJobs) {
         })
       );
     });
-  } else {
-    myJobsContainer.innerHTML += defaultAlbumTemplate;
   }
 }
+
+//FUNCTIONALITY CHALLENGES

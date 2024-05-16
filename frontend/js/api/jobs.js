@@ -41,3 +41,11 @@ export async function postRequest(job) {
   const res = await fetch(`${BASE_URL}${MY_JOBS_ENDPOINT}`, requestObject);
   console.log("fav", await res.json());
 }
+
+//Make a DELETE request to the API
+export async function deleteRequest(jobId) {
+  const res = await fetch(`${BASE_URL}${MY_JOBS_ENDPOINT}${jobId}`, {
+    method: "DELETE",
+  });
+  return await res.json();
+}
