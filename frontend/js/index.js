@@ -1,5 +1,5 @@
 // your code goes here.
-import { getJobs, postRequest } from "./api/jobs.js";
+import { getJobs, postRequest, getJobById } from "./api/jobs.js";
 import {
   jobTemplate,
   jobDetailsCardTemplate,
@@ -84,8 +84,10 @@ async function searchJobs(jobTitle) {
   const query = jobTitle;
   return jobsList.filter((job) => job.title.toLowerCase().includes(query));
 }
+
+//Get job details by the id
 async function viewJobDetails(jobId) {
-  const jobDetails = jobsList.find((job) => String(job.id) === String(jobId));
+  const jobDetails = await getJobById(jobId);
 
   console.log(jobDetails);
 
@@ -109,7 +111,7 @@ async function viewJobDetails(jobId) {
       id,
     });
   }
-  addSaveJobButtonEvents();
+  addSaveJobButtonEvents(jobId);
 }
 
 function addJobViewButtonEvents() {
@@ -158,16 +160,15 @@ async function addMyJobs(jobId) {
     myJobs.push(myJob);
     console.log("Added to bookmarked jobs:", myJob);
 
-    saveJob(jobId); //call POST request
+    //saveJob(jobId); //call POST request
   } else {
     console.log(myJob, "already exists");
   }
 }
-function addSaveJobButtonEvents() {
+function addSaveJobButtonEvents(jobId) {
   document.querySelectorAll(".save-job").forEach((button) => {
     button.addEventListener("click", async (event) => {
       event.preventDefault();
-      const jobId = event.target.dataset.jobId;
       console.log("Job ID:", jobId);
       await addMyJobs(jobId);
     });
