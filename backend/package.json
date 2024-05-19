@@ -1,7 +1,7 @@
 {
   "name": "job-search-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is a backend server that provides a RESTful API to search for jobs.",
   "main": "index.js",
   "scripts": {
     "server": "node backend-express-server.mjs",

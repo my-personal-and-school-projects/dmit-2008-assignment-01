@@ -1,6 +1,6 @@
-import express from 'express';
-import { PrismaClient } from '@prisma/client';
-import cors from 'cors';
+import express from "express";
+import { PrismaClient } from "@prisma/client";
+import cors from "cors";
 
 // create a new prisma orm client
 const prisma = new PrismaClient();
@@ -17,63 +17,58 @@ app.use(express.json());
 // Define routes and middleware here...
 
 app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+  console.log("Server is running on port 3000");
 });
 
 // GET endpoint to list jobs and search for jobs
-app.get('/jobs', async (req, res) => {
+app.get("/jobs", async (req, res) => {
   try {
-
     const { q } = req.query;
-    
+
     if (!q) {
-    
       const jobs = await prisma.job.findMany();
       res.json(jobs);
-      return
+      return;
     }
 
     // Construct the query based on the provided parameters
     const jobs = await prisma.job.findMany({
-      where:{
-        OR: [
-          { title: { contains: q } },
-          { description: { contains: q } },
-        ]
-      }
+      where: {
+        OR: [{ title: { contains: q } }, { description: { contains: q } }],
+      },
     });
 
     res.json(jobs);
   } catch (error) {
-    console.error('Error searching for jobs:', error);
-    res.status(500).json({ error: 'An internal server error occurred' });
+    console.error("Error searching for jobs:", error);
+    res.status(500).json({ error: "An internal server error occurred" });
   }
 });
 
 // GET endpoint to fetch a single job by id
-app.get('/jobs/:id', async (req, res) => {
+app.get("/jobs/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const job = await prisma.job.findUnique({
       where: {
-        id: parseInt(id)
-      }
+        id: parseInt(id),
+      },
     });
 
     if (!job) {
-      res.status(404).json({ error: 'Job not found' });
+      res.status(404).json({ error: "Job not found" });
       return;
     }
 
     res.json(job);
   } catch (error) {
-    console.error('Error fetching job:', error);
-    res.status(500).json({ error: 'An internal server error occurred' });
+    console.error("Error fetching job:", error);
+    res.status(500).json({ error: "An internal server error occurred" });
   }
-})
+});
 
 // POST endpoint to save a job
-app.post('/saved-jobs', async (req, res) => {
+app.post("/saved-jobs", async (req, res) => {
   try {
     // parse the body of the request
     const { jobId } = req.body;
@@ -87,20 +82,75 @@ app.post('/saved-jobs', async (req, res) => {
 
     res.status(201).json(savedJob);
   } catch (error) {
-    console.error('Error saving job:', error);
-    res.status(500).json({ error: 'An internal server error occurred' });
+    console.error("Error saving job:", error);
+    res.status(500).json({ error: "An internal server error occurred" });
   }
 });
 
 // GET endpoint to retrieve all saved jobs
-app.get('/saved-jobs', async (req, res) => {
+app.get("/saved-jobs", async (req, res) => {
   try {
     // Fetch all saved job records from the database
     const savedJobs = await prisma.savedJob.findMany();
 
     res.json(savedJobs);
   } catch (error) {
-    console.error('Error fetching saved jobs:', error);
-    res.status(500).json({ error: 'An internal server error occurred' });
+    console.error("Error fetching saved jobs:", error);
+    res.status(500).json({ error: "An internal server error occurred" });
+  }
+});
+
+// GET endpoint to fetch a single saved job by its ID
+app.get("/saved-jobs/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Fetch the saved job by its ID
+    const savedJob = await prisma.savedJob.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    if (!savedJob) {
+      res.status(404).json({ error: "Saved job not found" });
+      return;
+    }
+
+    res.json(savedJob);
+  } catch (error) {
+    console.error("Error fetching saved job:", error);
+    res.status(500).json({ error: "An internal server error occurred" });
+  }
+});
+
+// DELETE endpoint to delete a single saved job by its ID
+app.delete("/saved-jobs/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if the saved job exists
+    const savedJob = await prisma.savedJob.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    if (!savedJob) {
+      res.status(404).json({ error: "Saved job not found" });
+      return;
+    }
+
+    // Delete the saved job
+    await prisma.savedJob.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    res.status(204).end(); // Return a 204 No Content response upon successful deletion
+  } catch (error) {
+    console.error("Error deleting saved job:", error);
+    res.status(500).json({ error: "An internal server error occurred" });
   }
 });

@@ -6,6 +6,9 @@ import {
   myJobsTemplate,
 } from "./templates/job-templates.js";
 
+const JOBS_ENDPOINT = "/jobs";
+const MY_JOBS_ENDPOINT = "/saved-jobs";
+
 const searchJobsForm = document.querySelector("#search-jobs-form");
 const searchedJobsContainer = document.querySelector("#searched-jobs");
 const myJobsContainer = document.querySelector("#my-jobs");
@@ -22,8 +25,13 @@ const deleteFeedbackContainer = document.querySelector(
   "#delete-feedback-container"
 );
 
+const feedbackMessage = document.querySelector("#feedback-message");
+
 //Get the jobs data
-const jobsList = await getJobs();
+const jobsList = await getJobs(JOBS_ENDPOINT);
+
+//Get the saved-jobs data
+const savedJobsList = await getJobs(MY_JOBS_ENDPOINT);
 
 //Display all jobs on init
 async function displayAllJobs() {
@@ -169,6 +177,7 @@ async function addMyJobs(jobId) {
 
     //saveJob(jobId); //call POST request
   } else {
+    feedbackMessage.textContent = "Job already in bookmarks";
     console.log(myJob, "already exists");
   }
 }
@@ -221,6 +230,12 @@ function deleteJob(jobId) {
 async function removeMyJob(jobId) {
   const jobIndex = myJobs.findIndex((job) => String(job.id) === String(jobId));
 
+  //Find saved-job id
+  const savedJobId = savedJobsList.find(
+    (job) => String(job.jobId) === String(jobId)
+  );
+  console.log("job to remove", savedJobId.id);
+
   if (jobIndex !== -1) {
     const removedJob = myJobs.splice(jobIndex, 1)[0];
 
@@ -230,6 +245,8 @@ async function removeMyJob(jobId) {
     if (jobElement) {
       jobElement.remove();
     }
+
+    deleteJob(String(savedJobId.id));
     console.log("Removed Job:", removedJob.title);
     console.log(myJobs);
   }
