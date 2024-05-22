@@ -4,10 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx parcel",
+    "start": "parcel",
+    "build": "npx parcel build"
   },
   "author": "",
   "license": "ISC",
+  "source": "index.html",
   "dependencies": {
     "bootstrap": "^5.3.3"
   },
