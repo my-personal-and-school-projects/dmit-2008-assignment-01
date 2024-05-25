@@ -1,5 +1,11 @@
 // your code goes here.
-import { getJobs, postRequest, getJobById, deleteRequest } from "./api/jobs.js";
+import {
+  getJobs,
+  getJobSearch,
+  postRequest,
+  getJobById,
+  deleteRequest,
+} from "./api/jobs.js";
 import {
   jobTemplate,
   jobDetailsCardTemplate,
@@ -96,9 +102,8 @@ function displayJobs(searchResults) {
 
 //Search for jobs by title based on user input
 async function searchJobs(jobTitle) {
-  const jobSearch = await getJobs(JOBS_ENDPOINT);
   const query = jobTitle;
-  return jobSearch.filter((job) => job.title.toLowerCase().includes(query));
+  return await getJobSearch(query);
 }
 
 //Get job details by the id

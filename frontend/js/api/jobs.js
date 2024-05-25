@@ -11,7 +11,7 @@ export async function getJobs(endpoint) {
     const response = await fetch(`${BASE_URL}${endpoint}`);
 
     if (!response.ok) {
-      throw new Error("No data found");
+      throw new Error("No jobs found");
     }
     const data = await response.json();
 
@@ -21,6 +21,24 @@ export async function getJobs(endpoint) {
     throw error;
   }
 }
+
+export async function getJobSearch(query) {
+  try {
+    const response = await fetch(`${BASE_URL}${JOBS_ENDPOINT}?q=${query}`);
+
+    if (!response.ok) {
+      throw new Error("No jobs found");
+    }
+    const data = await response.json();
+
+    console.table(data); //Log Data for verification purposes
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+getJobSearch("software");
 
 //Make a GET request to the API to get jobs by the Id
 export async function getJobById(jobId) {
@@ -28,7 +46,7 @@ export async function getJobById(jobId) {
     const response = await fetch(`${BASE_URL}${JOBS_ENDPOINT}/${jobId}`);
 
     if (!response.ok) {
-      throw new Error("No data found");
+      throw new Error("No jobs found");
     }
     const data = await response.json();
 
@@ -38,6 +56,7 @@ export async function getJobById(jobId) {
     throw error;
   }
 }
+
 //Make a post request to the API using Async
 /* export async function postRequest(jobId) {
   //Create request header
