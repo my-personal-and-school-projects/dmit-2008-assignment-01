@@ -3,7 +3,7 @@
 const BASE_URL = "http://localhost:3000";
 const JOBS_ENDPOINT = "/jobs";
 const MY_JOBS_ENDPOINT = "/saved-jobs";
-const MOCKAPI_URL = "https://660f5012356b87a55c512819.mockapi.io/api/v1";
+//const MOCKAPI_URL = "https://660f5012356b87a55c512819.mockapi.io/api/v1";
 
 //Make a GET request to the API to get all jobs
 export async function getJobs(endpoint) {

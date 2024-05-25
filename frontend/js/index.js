@@ -96,8 +96,9 @@ function displayJobs(searchResults) {
 
 //Search for jobs by title based on user input
 async function searchJobs(jobTitle) {
+  const jobSearch = await getJobs(JOBS_ENDPOINT);
   const query = jobTitle;
-  return jobsList.filter((job) => job.title.toLowerCase().includes(query));
+  return jobSearch.filter((job) => job.title.toLowerCase().includes(query));
 }
 
 //Get job details by the id
