@@ -5,7 +5,11 @@ const JOBS_ENDPOINT = "/jobs";
 const MY_JOBS_ENDPOINT = "/saved-jobs";
 //const MOCKAPI_URL = "https://660f5012356b87a55c512819.mockapi.io/api/v1";
 
-//Make a GET request to the API to get all jobs
+/**
+ *Make a GET request to the API
+ * @param {*} endpoint
+ * @returns all jobs from the API
+ */
 export async function getJobs(endpoint) {
   try {
     const response = await fetch(`${BASE_URL}${endpoint}`);
@@ -22,6 +26,11 @@ export async function getJobs(endpoint) {
   }
 }
 
+/**
+ *Make a GET request to the API
+ * @param {*} query
+ * @returns the jobs matching an specific word
+ */
 export async function getJobSearch(query) {
   try {
     const response = await fetch(`${BASE_URL}${JOBS_ENDPOINT}?q=${query}`);
@@ -31,16 +40,18 @@ export async function getJobSearch(query) {
     }
     const data = await response.json();
 
-    console.table(data); //Log Data for verification purposes
+    //console.table(data); //Log Data for verification purposes
     return data;
   } catch (error) {
     throw error;
   }
 }
 
-getJobSearch("software");
-
-//Make a GET request to the API to get jobs by the Id
+/**
+ *Make a GET request to the API
+ * @param {*} jobId
+ * @returns the jobs by the Id
+ */
 export async function getJobById(jobId) {
   try {
     const response = await fetch(`${BASE_URL}${JOBS_ENDPOINT}/${jobId}`);
@@ -78,8 +89,11 @@ export async function getJobById(jobId) {
   console.log("fav", await res.json());
 } */
 
-//Make a post request to the API using fetch
-
+/**
+ *Make a post request to the API using fetch-then
+ * @param {*} jobId
+ *
+ */
 export async function postRequest(jobId) {
   const newJob = { jobId };
 
@@ -104,7 +118,11 @@ export async function postRequest(jobId) {
     });
 }
 
-//Make a DELETE request to the API
+/**
+ * Make a DELETE request to the API to remove a selected saved-job
+ * @param {*} jobId
+ * @returns the remaining saved-jobs
+ */
 export async function deleteRequest(jobId) {
   const res = await fetch(`${BASE_URL}${MY_JOBS_ENDPOINT}/${jobId}`, {
     method: "DELETE",

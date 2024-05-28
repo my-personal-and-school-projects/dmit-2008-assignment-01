@@ -1,3 +1,8 @@
+/**
+ *
+ * @param {*} param0
+ * @returns A template for the job card
+ */
 export const jobTemplate = ({ company, title, location, date_posted, id }) => `
 <li class="job-card card my-1" style="width: 18rem;">
 <div class="card-header">${company}</div>
@@ -13,6 +18,11 @@ export const jobTemplate = ({ company, title, location, date_posted, id }) => `
 </div>
 </li>`;
 
+/**
+ *
+ * @param {*} param0
+ * @returns a template for the saved-job in the bookmarks area
+ */
 export const myJobsTemplate = ({
   company,
   title,
@@ -34,6 +44,11 @@ export const myJobsTemplate = ({
 </div>
 </li>`;
 
+/**
+ *
+ * @param {*} param0
+ * @returns a template for the job details card
+ */
 export const jobDetailsCardTemplate = ({
   title,
   company,

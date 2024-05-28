@@ -39,7 +39,9 @@ const jobsList = await getJobs(JOBS_ENDPOINT);
 //Get the saved-jobs data
 const savedJobsList = await getJobs(MY_JOBS_ENDPOINT);
 
-//Display all jobs on init
+/**
+ * Display all jobs on init
+ */
 async function displayAllJobs() {
   searchedJobsContainer.innerHTML = "";
 
@@ -67,6 +69,10 @@ displayAllJobs();
 
 searchJobsForm.addEventListener("submit", onSubmitSearchJobsForm);
 
+/**
+ * Submit the search form
+ * @param {*} e
+ */
 async function onSubmitSearchJobsForm(e) {
   e.preventDefault();
   jobDetailsCard.innerHTML = "";
@@ -76,7 +82,10 @@ async function onSubmitSearchJobsForm(e) {
   addJobViewButtonEvents();
 }
 
-//Display the job search results
+/**
+ * Display the job search results based on user input
+ * @param {*} searchResults
+ */
 function displayJobs(searchResults) {
   searchedJobsContainer.innerHTML = "";
 
@@ -100,19 +109,26 @@ function displayJobs(searchResults) {
   }
 }
 
-//Search for jobs by title based on user input
+/**
+ * Search for jobs by title based on user input
+ * @param {*} jobTitle
+ * @returns
+ */
 async function searchJobs(jobTitle) {
   const query = jobTitle;
   return await getJobSearch(query);
 }
 
-//Get job details by the id
+/**
+ * Get job details by the id
+ * @param {*} jobId
+ */
 async function viewJobDetails(jobId) {
   saveFeedbackContainer.classList.add("d-none");
 
   const jobDetails = await getJobById(jobId);
 
-  console.log(jobDetails);
+  //console.log(jobDetails);
 
   if (jobDetails) {
     const {
@@ -137,19 +153,24 @@ async function viewJobDetails(jobId) {
   addSaveJobButtonEvents(jobId);
 }
 
-//Add addEventListener to the view-job-buttons on rendering
+/**
+ * Add addEventListener to the view-job-buttons on rendering
+ */
 function addJobViewButtonEvents() {
   document.querySelectorAll(".view-job-button").forEach((button) => {
     button.addEventListener("click", async (event) => {
       event.preventDefault();
       const jobId = event.target.dataset.jobId;
-      console.log("Job ID:", jobId);
+      //console.log("Job ID:", jobId);
       await viewJobDetails(jobId);
     });
   });
 }
 
-//Switch between tabs
+/**
+ * Switch between tabs on click
+ * @param {*} tab
+ */
 function switchTabs(tab) {
   myJobsTab.classList.add("d-none");
   searchJobsTab.classList.add("d-none");
@@ -159,7 +180,7 @@ function switchTabs(tab) {
 toggleMyJobsTab.addEventListener("click", (event) => {
   event.preventDefault();
   switchTabs(myJobsTab);
-  renderMyJobs(myJobs);
+  renderMyJobs(myJobs); //TODO get the saved-jobs directly from the server
 });
 
 toggleSearchJobsTab.addEventListener("click", (event) => {
@@ -170,7 +191,10 @@ toggleSearchJobsTab.addEventListener("click", (event) => {
 //Make a store to contain the bookmarked jobs
 let myJobs = [];
 
-//Add the selected job to the bookmarked jobs store
+/**
+ * Add the selected job to the bookmarked jobs store
+ * @param {*} jobId
+ */
 async function addMyJobs(jobId) {
   const myJob = jobsList.find((job) => String(job.id) === String(jobId));
 
@@ -178,29 +202,34 @@ async function addMyJobs(jobId) {
     myJobsContainer.innerHTML = "";
 
     myJobs.push(myJob);
-    console.log("Added to bookmarked jobs:", myJob);
-    console.log(myJobs);
+    //console.log("Added to bookmarked jobs:", myJob);
+    //console.log(myJobs);
 
-    //saveJob(jobId); //call POST request
+    saveJob(jobId); //call POST request
   } else {
     feedbackMessage.textContent = "Job already in bookmarks";
-    console.log(myJob, "already exists");
+    //console.log(myJob, "already exists");
   }
 }
 
-//Add addEventListener to the save-job buttons on rendering
+/**
+ * Add addEventListener to the save-job buttons on rendering
+ * @param {*} jobId
+ */
 function addSaveJobButtonEvents(jobId) {
   document.querySelectorAll(".save-job").forEach((button) => {
     button.addEventListener("click", async (event) => {
       event.preventDefault();
-      console.log("Job ID:", jobId);
       await addMyJobs(jobId);
       saveFeedbackContainer.classList.remove("d-none");
     });
   });
 }
 
-//Render bookmarked when changing tabs
+/**
+ * Render bookmarked jobs when changing tabs
+ * @param {*} listOfJobs
+ */
 function renderMyJobs(listOfJobs) {
   myJobsContainer.innerHTML = ""; //Clear container
 
@@ -222,17 +251,29 @@ function renderMyJobs(listOfJobs) {
 }
 
 //BONUS FUNCTIONALITY
+
+/**
+ * Call the POST request to save the selected job in the saved-jobs store
+ * @param {*} jobId
+ */
 function saveJob(jobId) {
   postRequest(jobId);
 }
 
 //FUNCTIONALITY CHALLENGES
 
+/**
+ * Call the DELETE request to remove the selected saved-job from the store
+ * @param {*} jobId
+ */
 function deleteJob(jobId) {
   deleteRequest(jobId);
 }
 
-//Remove the selected job from the bookmarked jobs store
+/**
+ * Remove the selected job from the bookmarked jobs store
+ * @param {*} jobId
+ */
 async function removeMyJob(jobId) {
   const jobIndex = myJobs.findIndex((job) => String(job.id) === String(jobId));
 
@@ -240,7 +281,7 @@ async function removeMyJob(jobId) {
   const savedJobId = savedJobsList.find(
     (job) => String(job.jobId) === String(jobId)
   );
-  console.log("job to remove", savedJobId.id);
+  //console.log("job to remove", savedJobId.id);
 
   if (jobIndex !== -1) {
     const removedJob = myJobs.splice(jobIndex, 1)[0];
@@ -253,18 +294,20 @@ async function removeMyJob(jobId) {
     }
 
     deleteJob(String(savedJobId.id));
-    console.log("Removed Job:", removedJob.title);
-    console.log(myJobs);
+    //console.log("Removed Job:", removedJob.title);
+    //console.log(myJobs);
   }
 }
 
-//Add addEventListener to the delete-job buttons on rendering
+/**
+ * Add addEventListener to the delete-job buttons on rendering
+ */
 function addDeleteJobButtonEvents() {
   document.querySelectorAll(".delete-job").forEach((button) => {
     button.addEventListener("click", async (event) => {
       event.preventDefault();
       const jobId = event.target.dataset.jobId;
-      console.log("Job ID:", jobId);
+      //console.log("Job ID:", jobId);
       removeMyJob(jobId);
       deleteFeedbackContainer.classList.remove("d-none");
     });
